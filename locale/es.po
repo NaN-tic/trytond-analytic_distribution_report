@@ -1,0 +1,123 @@
+#
+msgid ""
+msgstr "Content-Type: text/plain; charset=utf-8\n"
+
+msgctxt "error:analytic.distribution.report:"
+msgid ""
+"Analytic Account \"%(account)s\" cannot be configured as source and target "
+"in report \"%(report)s\"."
+msgstr ""
+"La cuenta analítica \"%(account)s\" no se puede configurar como origen y "
+"destino en el informe \"%(report)s\"."
+
+msgctxt "field:analytic.distribution.report,company:"
+msgid "Company"
+msgstr "Empresa"
+
+msgctxt "field:analytic.distribution.report,create_date:"
+msgid "Create Date"
+msgstr "Fecha de creación"
+
+msgctxt "field:analytic.distribution.report,create_uid:"
+msgid "Create User"
+msgstr "Usuario de creación"
+
+msgctxt "field:analytic.distribution.report,end_date:"
+msgid "End Date"
+msgstr "Fecha finalización"
+
+msgctxt "field:analytic.distribution.report,id:"
+msgid "ID"
+msgstr "ID"
+
+msgctxt "field:analytic.distribution.report,name:"
+msgid "Name"
+msgstr "Nombre"
+
+msgctxt "field:analytic.distribution.report,rec_name:"
+msgid "Name"
+msgstr "Nombre"
+
+msgctxt "field:analytic.distribution.report,rules:"
+msgid "Rules"
+msgstr "Reglas"
+
+msgctxt "field:analytic.distribution.report,start_date:"
+msgid "Start Date"
+msgstr "Fecha Inicio"
+
+msgctxt "field:analytic.distribution.report,write_date:"
+msgid "Write Date"
+msgstr "Fecha de modificación"
+
+msgctxt "field:analytic.distribution.report,write_uid:"
+msgid "Write User"
+msgstr "Usuario de modificación"
+
+msgctxt "field:analytic.distribution.report.rule,amount:"
+msgid "Amount"
+msgstr "Importe"
+
+msgctxt "field:analytic.distribution.report.rule,create_date:"
+msgid "Create Date"
+msgstr "Fecha de creación"
+
+msgctxt "field:analytic.distribution.report.rule,create_uid:"
+msgid "Create User"
+msgstr "Usuario de creación"
+
+msgctxt "field:analytic.distribution.report.rule,id:"
+msgid "ID"
+msgstr "ID"
+
+msgctxt "field:analytic.distribution.report.rule,ratio:"
+msgid "Ratio"
+msgstr "Porcentaje"
+
+msgctxt "field:analytic.distribution.report.rule,rec_name:"
+msgid "Name"
+msgstr "Nombre"
+
+msgctxt "field:analytic.distribution.report.rule,report:"
+msgid "Report"
+msgstr "Informe"
+
+msgctxt "field:analytic.distribution.report.rule,source_analytic_account:"
+msgid "Source Analytic Account"
+msgstr "Cuenta analítica origen"
+
+msgctxt "field:analytic.distribution.report.rule,target_analytic_account:"
+msgid "Target Analytic Account"
+msgstr "Cuenta analítica destino"
+
+msgctxt "field:analytic.distribution.report.rule,write_date:"
+msgid "Write Date"
+msgstr "Fecha de modificación"
+
+msgctxt "field:analytic.distribution.report.rule,write_uid:"
+msgid "Write User"
+msgstr "Usuario de modificación"
+
+msgctxt "model:analytic.distribution.report,name:"
+msgid "Analytic Distribution Report"
+msgstr "Informe de distribución analítica"
+
+msgctxt "model:analytic.distribution.report.rule,name:"
+msgid "Analytic Distribution Report Rule"
+msgstr "Regla de informe de distribución analítica"
+
+msgctxt "model:ir.action,name:act_report"
+msgid "Analytic Distribution Report"
+msgstr "Informe de distribución analítica"
+
+msgctxt "model:ir.action,name:report_spreadsheet"
+msgid "Spreadsheet"
+msgstr "Hoja de cálculo"
+
+msgctxt "model:ir.ui.menu,name:menu_analytic_distribution_report"
+msgid "Analytic Distribution Report"
+msgstr "Informe de distribución analítica"
+
+msgctxt "view:analytic.distribution.report.rule:"
+msgid "%"
+msgstr "%"

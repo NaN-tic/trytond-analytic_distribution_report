@@ -1,0 +1,85 @@
+<tryton>
+    <data>
+        <record model="ir.ui.view" id="analytic_distribution_report_view_form">
+            <field name="model">analytic.distribution.report</field>
+            <field name="type">form</field>
+            <field name="name">report_form</field>
+        </record>
+        <record model="ir.ui.view" id="analytic_distribution_report_view_list">
+            <field name="model">analytic.distribution.report</field>
+            <field name="type">tree</field>
+            <field name="name">report_list</field>
+        </record>
+
+        <record model="ir.action.act_window" id="act_report">
+            <field name="name">Analytic Distribution Report</field>
+            <field name="res_model">analytic.distribution.report</field>
+        </record>
+        <record model="ir.action.act_window.view" id="act_report_view1">
+            <field name="sequence" eval="10"/>
+            <field name="view" ref="analytic_distribution_report_view_list"/>
+            <field name="act_window" ref="act_report"/>
+        </record>
+        <record model="ir.action.act_window.view" id="act_report_view2">
+            <field name="sequence" eval="20"/>
+            <field name="view" ref="analytic_distribution_report_view_form"/>
+            <field name="act_window" ref="act_report"/>
+        </record>
+
+        <record model="ir.model.access" id="access_analytic_distribution_report">
+            <field name="model" search="[('model', '=', 'analytic.distribution.report')]"/>
+            <field name="perm_read" eval="False"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_delete" eval="False"/>
+        </record>
+        <record model="ir.model.access" id="access_analytic_distribution_report_account">
+            <field name="model" search="[('model', '=', 'analytic.distribution.report')]"/>
+            <field name="group" ref="account.group_account"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_delete" eval="True"/>
+        </record>
+        <menuitem parent="account.menu_reporting"
+            action="act_report"
+            id="menu_analytic_distribution_report"/>
+
+        <record model="ir.action.report" id="report_spreadsheet">
+            <field name="name">Spreadsheet</field>
+            <field name="model">analytic.distribution.report</field>
+            <field name="report_name">analytic.distribution.report.spreadsheet</field>
+        </record>
+        <record model="ir.action.keyword" id="report_spreadsheet_keyword">
+            <field name="keyword">form_print</field>
+            <field name="model">analytic.distribution.report,-1</field>
+            <field name="action" ref="report_spreadsheet"/>
+        </record>
+
+        <record model="ir.ui.view" id="analytic_distribution_report_rule_view_form">
+            <field name="model">analytic.distribution.report.rule</field>
+            <field name="type">form</field>
+            <field name="name">report_rule_form</field>
+        </record>
+        <record model="ir.ui.view" id="analytic_distribution_report_rule_view_list">
+            <field name="model">analytic.distribution.report.rule</field>
+            <field name="type">tree</field>
+            <field name="name">report_rule_list</field>
+        </record>
+        <record model="ir.model.access" id="access_analytic_distribution_report_rule">
+            <field name="model" search="[('model', '=', 'analytic.distribution.report.rule')]"/>
+            <field name="perm_read" eval="False"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_delete" eval="False"/>
+        </record>
+        <record model="ir.model.access" id="access_analytic_distribution_report_rule_account">
+            <field name="model" search="[('model', '=', 'analytic.distribution.report.rule')]"/>
+            <field name="group" ref="account.group_account"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_delete" eval="True"/>
+        </record>
+    </data>
+</tryton>

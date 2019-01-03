@@ -1,0 +1,9 @@
+<tree editable="bottom">
+    <field name="report"/>
+    <field name="source_analytic_account"/>
+    <field name="target_analytic_account"/>
+    <field name="amount"/>
+    <field name="ratio" factor="100">
+        <suffix string="%" name="ratio"/>
+    </field>
+</tree>
