@@ -158,9 +158,10 @@ class AnalyticDistributionReport(ModelSQL, ModelView):
         analytics = Analytic.search([
                 ('type', '=', 'normal'),
                 ])
-        row = ['']
-        for analytic in analytics:
-            row.append(analytic.rec_name)
+        # Sort by rec_name
+        analytics = [dict(name=x.rec_name, id=x.id) for x in analytics]
+        analytics.sort(key=lambda x: x['name'])
+        row = [''] + [x['name'] for x in analytics]
         ws.append(row)
         for account in Account.search([
                     ('kind', 'in', ('expense', 'revenue')),
@@ -168,7 +169,7 @@ class AnalyticDistributionReport(ModelSQL, ModelView):
             to_add = False
             row = [account.rec_name]
             for analytic in analytics:
-                key = (analytic.id, account.id)
+                key = (analytic['id'], account.id)
                 value = result.get(key, _ZERO)
                 if value:
                     to_add = True
