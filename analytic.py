@@ -155,10 +155,15 @@ class AnalyticDistributionReport(ModelSQL, ModelView):
         wb = openpyxl.Workbook(write_only=True)
         ws = wb.create_sheet()
 
+        # Add header
+        row = [self.name, self.start_date, self.end_date]
+        ws.append(row)
+        ws.append([])
+
+        # Add data
         analytics = Analytic.search([
                 ('type', '=', 'normal'),
                 ])
-        # Sort by rec_name
         analytics = [dict(name=x.rec_name, id=x.id) for x in analytics]
         analytics.sort(key=lambda x: x['name'])
         row = [''] + [x['name'] for x in analytics]
