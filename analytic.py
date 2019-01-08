@@ -162,13 +162,19 @@ class AnalyticDistributionReport(ModelSQL, ModelView):
         for analytic in analytics:
             row.append(analytic.rec_name)
         ws.append(row)
-        for account in Account.search([('kind', 'in', ('expense', 'revenue'))],
-                order=[('code', 'ASC'), ('name', 'ASC')]):
+        for account in Account.search([
+                    ('kind', 'in', ('expense', 'revenue')),
+                    ], order=[('code', 'ASC'), ('name', 'ASC')]):
+            to_add = False
             row = [account.rec_name]
             for analytic in analytics:
                 key = (analytic.id, account.id)
-                row.append(result.get(key, _ZERO))
-            ws.append(row)
+                value = result.get(key, _ZERO)
+                if value:
+                    to_add = True
+                row.append(value)
+            if to_add:
+                ws.append(row)
 
         fd, filename = tempfile.mkstemp()
         try:
