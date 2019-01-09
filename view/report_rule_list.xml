@@ -1,4 +1,4 @@
-<tree editable="bottom">
+<tree editable="bottom" sequence="sequence">
     <field name="report"/>
     <field name="source_analytic_account"/>
     <field name="target_analytic_account"/>
