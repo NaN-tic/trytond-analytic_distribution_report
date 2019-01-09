@@ -7,13 +7,19 @@ from sql import Column
 from sql.aggregate import Sum
 from sql.conditionals import Coalesce
 from trytond.report import Report
-from trytond.model import ModelSQL, ModelView, MatchMixin, fields
+from trytond.model import (ModelSQL, ModelView, MatchMixin, fields,
+    sequence_ordered)
 from trytond.transaction import Transaction
 from trytond.pool import Pool
 
 __all__ = ['AnalyticDistributionReport', 'AnalyticDistributionReportRule',
     'SpreadsheetReport']
 _ZERO = Decimal(0)
+
+
+def round(number, digits=2):
+    quantize = Decimal(10) ** -Decimal(digits)
+    return Decimal(number).quantize(quantize)
 
 
 class AnalyticDistributionReport(ModelSQL, ModelView):
@@ -30,9 +36,9 @@ class AnalyticDistributionReport(ModelSQL, ModelView):
     def __setup__(cls):
         super(AnalyticDistributionReport, cls).__setup__()
         cls._error_messages.update({
-                'account_in_source_and_target': ('Analytic Account '
-                    '"%(account)s" cannot be configured as source and target '
-                    'in report "%(report)s".'),
+                'account_in_target_after_source': ('Analytic Account '
+                    '"%(account)s" cannot be configured as target after it has '
+                    'been configured as source in report "%(report)s".'),
                 })
 
     @staticmethod
@@ -45,11 +51,11 @@ class AnalyticDistributionReport(ModelSQL, ModelView):
             report.check_source_target()
 
     def check_source_target(self):
-        targets = set([])
+        sources = set([])
         for rule in self.rules:
-            targets.add(rule.target_analytic_account)
-            if rule.source_analytic_account in targets:
-                self.raise_user_error('account_in_source_and_target', {
+            sources.add(rule.source_analytic_account)
+            if rule.target_analytic_account in sources:
+                self.raise_user_error('account_in_target_after_source', {
                         'account': rule.source_analytic_account.rec_name,
                         'report': self.rec_name,
                         })
@@ -59,21 +65,29 @@ class AnalyticDistributionReport(ModelSQL, ModelView):
         total = _ZERO
         sign = 1 if amount >= 0 else -1
         amount = abs(amount)
+        children = set([])
         for rule in self.rules:
             if rule.source_analytic_account == analytic:
-                spread_amount = amount * Decimal(str(rule.ratio))
+                spread_amount = round(amount * Decimal(str(rule.ratio)))
                 total += spread_amount
                 res[rule.target_analytic_account.id] = spread_amount
                 last = rule.target_analytic_account
+            elif rule.source_analytic_account.id in res:
+                children.add(rule.source_analytic_account)
         if res and total != amount:
             if not last.id in res:
                 res[last.id] = _ZERO
-            res[last.id] += total - amount
+            res[last.id] += round(total - amount)
         elif not res:
             res[analytic.id] = amount
 
         for k, v in res.iteritems():
             res[k] *= sign
+
+        for child in children:
+            r = self.spread(child, res[child.id])
+            del res[child.id]
+            res.update(r)
         return res
 
     def spreadsheet(self):
@@ -220,7 +234,8 @@ class SpreadsheetReport(Report):
         return ('xlsx', bytearray(content), False, action_report.name)
 
 
-class AnalyticDistributionReportRule(ModelSQL, ModelView, MatchMixin):
+class AnalyticDistributionReportRule(sequence_ordered(), ModelSQL, ModelView,
+    MatchMixin):
     'Analytic Distribution Report Rule'
     __name__ = 'analytic.distribution.report.rule'
     report = fields.Many2One('analytic.distribution.report', 'Report',

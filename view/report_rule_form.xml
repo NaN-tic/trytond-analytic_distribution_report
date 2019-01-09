@@ -1,6 +1,8 @@
 <form col="6">
     <label name="report"/>
     <field name="report"/>
+    <label name="sequence"/>
+    <field name="sequence"/>
     <newline/>
     <label name="source_analytic_account"/>
     <field name="source_analytic_account"/>
