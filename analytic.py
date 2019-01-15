@@ -180,21 +180,33 @@ class AnalyticDistributionReport(ModelSQL, ModelView):
                 ])
         analytics = [dict(name=x.rec_name, id=x.id) for x in analytics]
         analytics.sort(key=lambda x: x['name'])
+        totals = defaultdict(lambda: _ZERO)
         row = [''] + [x['name'] for x in analytics]
         ws.append(row)
         for account in Account.search([
                     ('kind', 'in', ('expense', 'revenue')),
                     ], order=[('code', 'ASC'), ('name', 'ASC')]):
             to_add = False
+            # Add account name
             row = [account.rec_name]
+            amount = _ZERO
             for analytic in analytics:
                 key = (analytic['id'], account.id)
                 value = result.get(key, _ZERO)
                 if value:
                     to_add = True
+                    amount += value
+                    totals[analytic['id']] += value
                 row.append(value)
+            # Add row total
+            row.append(amount)
             if to_add:
                 ws.append(row)
+
+        row = ['']
+        for analytic in analytics:
+            row.append(totals[analytic['id']])
+        ws.append(row)
 
         fd, filename = tempfile.mkstemp()
         try:
