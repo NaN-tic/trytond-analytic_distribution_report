@@ -1,5 +1,6 @@
 import os
-import openpyxl
+from openpyxl import Workbook
+from openpyxl.cell.cell import WriteOnlyCell
 import tempfile
 from collections import defaultdict
 from decimal import Decimal
@@ -166,7 +167,7 @@ class AnalyticDistributionReport(ModelSQL, ModelView):
                 result[key] += v
 
         # Generate .XLSX
-        wb = openpyxl.Workbook(write_only=True)
+        wb = Workbook(write_only=True)
         ws = wb.create_sheet()
 
         # Add header
@@ -197,15 +198,21 @@ class AnalyticDistributionReport(ModelSQL, ModelView):
                     to_add = True
                     amount += value
                     totals[analytic['id']] += value
-                row.append(value)
+                cell = WriteOnlyCell(ws, value)
+                cell.number_format = '0.00'
+                row.append(cell)
             # Add row total
-            row.append(amount)
+            cell = WriteOnlyCell(ws, amount)
+            cell.number_format = '0.00'
+            row.append(cell)
             if to_add:
                 ws.append(row)
 
         row = ['']
         for analytic in analytics:
-            row.append(totals[analytic['id']])
+            cell = WriteOnlyCell(ws, totals[analytic['id']])
+            cell.number_format = '0.00'
+            row.append(cell)
         ws.append(row)
 
         fd, filename = tempfile.mkstemp()
