@@ -16,6 +16,7 @@ from trytond.pool import Pool
 __all__ = ['AnalyticDistributionReport', 'AnalyticDistributionReportRule',
     'SpreadsheetReport']
 _ZERO = Decimal(0)
+_FORMAT = '#,###,###,##0.00'
 
 
 def round(number, digits=2):
@@ -199,11 +200,11 @@ class AnalyticDistributionReport(ModelSQL, ModelView):
                     amount += value
                     totals[analytic['id']] += value
                 cell = WriteOnlyCell(ws, value)
-                cell.number_format = '0.00'
+                cell.number_format = _FORMAT
                 row.append(cell)
             # Add row total
             cell = WriteOnlyCell(ws, amount)
-            cell.number_format = '0.00'
+            cell.number_format = _FORMAT
             row.append(cell)
             if to_add:
                 ws.append(row)
@@ -211,7 +212,7 @@ class AnalyticDistributionReport(ModelSQL, ModelView):
         row = ['']
         for analytic in analytics:
             cell = WriteOnlyCell(ws, totals[analytic['id']])
-            cell.number_format = '0.00'
+            cell.number_format = _FORMAT
             row.append(cell)
         ws.append(row)
 
