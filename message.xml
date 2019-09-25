@@ -1,0 +1,7 @@
+<tryton>
+    <data>
+        <record model="ir.message" id="msg_account_in_target_after_source">
+            <field name="text">"%(account)s" cannot be configured as target after it has been configured as source in report "%(report)s".</field>
+        </record>
+    </data>
+</tryton>
