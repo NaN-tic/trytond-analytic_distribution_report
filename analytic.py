@@ -12,6 +12,8 @@ from trytond.model import (ModelSQL, ModelView, MatchMixin, fields,
     sequence_ordered)
 from trytond.transaction import Transaction
 from trytond.pool import Pool
+from trytond.exceptions import UserError
+from trytond.i18n import gettext
 
 __all__ = ['AnalyticDistributionReport', 'AnalyticDistributionReportRule',
     'SpreadsheetReport']
@@ -34,15 +36,6 @@ class AnalyticDistributionReport(ModelSQL, ModelView):
     rules = fields.One2Many('analytic.distribution.report.rule', 'report',
         'Rules')
 
-    @classmethod
-    def __setup__(cls):
-        super(AnalyticDistributionReport, cls).__setup__()
-        cls._error_messages.update({
-                'account_in_target_after_source': ('Analytic Account '
-                    '"%(account)s" cannot be configured as target after it has '
-                    'been configured as source in report "%(report)s".'),
-                })
-
     @staticmethod
     def default_company():
         return Transaction().context.get('company')
@@ -57,10 +50,10 @@ class AnalyticDistributionReport(ModelSQL, ModelView):
         for rule in self.rules:
             sources.add(rule.source_analytic_account)
             if rule.target_analytic_account in sources:
-                self.raise_user_error('account_in_target_after_source', {
-                        'account': rule.source_analytic_account.rec_name,
-                        'report': self.rec_name,
-                        })
+                raise UserError(gettext('analytic_distribution_report.'
+                        'msg_account_in_target_after_source',
+                        account=rule.source_analytic_account.rec_name,
+                        report=self.rec_name))
 
     def spread(self, analytic, amount):
         res = {}
@@ -83,7 +76,7 @@ class AnalyticDistributionReport(ModelSQL, ModelView):
         elif not res:
             res[analytic.id] = amount
 
-        for k, v in res.iteritems():
+        for k, v in res.items():
             res[k] *= sign
 
         for child in children:
@@ -139,7 +132,6 @@ class AnalyticDistributionReport(ModelSQL, ModelView):
         result = {}
         id2currency = {}
         for row in cursor.fetchall():
-            print
             analytic = id2account[row[0]]
             account_id = row[1]
             currency_id = row[2]
@@ -161,7 +153,7 @@ class AnalyticDistributionReport(ModelSQL, ModelView):
                 balance = analytic.currency.round(balance)
 
             spread = self.spread(analytic, balance)
-            for k, v in spread.iteritems():
+            for k, v in spread.items():
                 key = (k, account_id)
                 if key not in result:
                     result[key] = _ZERO
@@ -186,7 +178,10 @@ class AnalyticDistributionReport(ModelSQL, ModelView):
         row = [''] + [x['name'] for x in analytics]
         ws.append(row)
         for account in Account.search([
-                    ('kind', 'in', ('expense', 'revenue')),
+                    ['OR',
+                        ('type.expense', '=', True),
+                        ('type.revenue', '=', True),
+                        ],
                     ], order=[('code', 'ASC'), ('name', 'ASC')]):
             to_add = False
             # Add account name
@@ -220,7 +215,7 @@ class AnalyticDistributionReport(ModelSQL, ModelView):
         try:
             os.close(fd)
             wb.save(filename)
-            with open(filename, 'r') as f:
+            with open(filename, 'rb') as f:
                 data = f.read()
         finally:
             os.unlink(filename)
